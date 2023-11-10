@@ -19,37 +19,37 @@ env:
   ccache_version: '4.5'
 
 jobs:
-  # formatting:
-  #     name: "format"
-  #     runs-on: ubuntu-latest
-  #     steps:
-  #       - name: Checkout
-  #         uses: actions/checkout@v2
-  #         with:
-  #           submodules: recursive
+  formatting:
+      name: "format"
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v2
+          with:
+            submodules: recursive
 
-  #       - name: Install dependencies
-  #         run: |
-  #           sudo apt-get update
-  #           sudo apt-get install -y build-essential cmake
+        - name: Install dependencies
+          run: |
+            sudo apt-get update
+            sudo apt-get install -y build-essential cmake
 
-  #           python3 -m pip install black isort
-  #           python3 -m pip install cmake-format
-  #           sudo apt-get install -y shfmt
+            python3 -m pip install black isort
+            python3 -m pip install cmake-format
+            sudo apt-get install -y shfmt
 
-  #       - name: Setup latest clang
-  #         run: |
-  #          sudo bash scripts/ci/update-alternatives-clang.sh 17 100
+        - name: Setup latest clang
+          run: |
+           sudo bash scripts/ci/update-alternatives-clang.sh 17 100
 
-  #       - name: Run format-script
-  #         run:
-  #           bash scripts/ci/format-check.sh
+        - name: Run format-script
+          run:
+            bash scripts/ci/format-check.sh
 
-  #       - uses: actions/upload-artifact@v2
-  #         if: always()
-  #         with:
-  #           name: format
-  #           path: ${{ github.workspace }}/build/clang-tidy.*.yml
+        - uses: actions/upload-artifact@v2
+          if: always()
+          with:
+            name: format
+            path: ${{ github.workspace }}/build/clang-tidy.*.yml
 
   # build-test:
   #     name: "build-test"
@@ -300,7 +300,7 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: wheels
-        
+
     - name: Debugging Information
       run: |
         echo "Download Artifacts Step Executed Successfully!"
