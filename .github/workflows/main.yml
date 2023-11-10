@@ -310,8 +310,8 @@ jobs:
         release_name: Release ${{ github.ref }}
         draft: false
         prerelease: false
-        
-    - name: Debug Information
+
+    - name: Debug Information2
       run: |
         echo "Release Upload URL: ${{ steps.create_release.outputs.upload_url }}"
         ls -R ./wheelhouse
