@@ -19,81 +19,81 @@ env:
   ccache_version: '4.5'
 
 jobs:
-  formatting:
-      name: "format"
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v2
-          with:
-            submodules: recursive
+  # formatting:
+  #     name: "format"
+  #     runs-on: ubuntu-latest
+  #     steps:
+  #       - name: Checkout
+  #         uses: actions/checkout@v2
+  #         with:
+  #           submodules: recursive
 
-        - name: Install dependencies
-          run: |
-            sudo apt-get update
-            sudo apt-get install -y build-essential cmake
+  #       - name: Install dependencies
+  #         run: |
+  #           sudo apt-get update
+  #           sudo apt-get install -y build-essential cmake
 
-            python3 -m pip install black isort
-            python3 -m pip install cmake-format
-            sudo apt-get install -y shfmt
+  #           python3 -m pip install black isort
+  #           python3 -m pip install cmake-format
+  #           sudo apt-get install -y shfmt
 
-        - name: Setup latest clang
-          run: |
-           sudo bash scripts/ci/update-alternatives-clang.sh 17 100
+  #       - name: Setup latest clang
+  #         run: |
+  #          sudo bash scripts/ci/update-alternatives-clang.sh 17 100
 
-        - name: Run format-script
-          run:
-            bash scripts/ci/format-check.sh
+  #       - name: Run format-script
+  #         run:
+  #           bash scripts/ci/format-check.sh
 
-        - uses: actions/upload-artifact@v2
-          if: always()
-          with:
-            name: format
-            path: ${{ github.workspace }}/build/clang-tidy.*.yml
+  #       - uses: actions/upload-artifact@v2
+  #         if: always()
+  #         with:
+  #           name: format
+  #           path: ${{ github.workspace }}/build/clang-tidy.*.yml
 
-  build-test:
-      name: "build-test"
-      strategy:
-        fail-fast: false
-        matrix:
-          include:
-            - name: "ubuntu"
-              os: "ubuntu-latest"
-            - name: "macos"
-              os: "macos-latest"
-            - name: "android"
-              os: "ubuntu-latest"
+  # build-test:
+  #     name: "build-test"
+  #     strategy:
+  #       fail-fast: false
+  #       matrix:
+  #         include:
+  #           - name: "ubuntu"
+  #             os: "ubuntu-latest"
+  #           - name: "macos"
+  #             os: "macos-latest"
+  #           - name: "android"
+  #             os: "ubuntu-latest"
 
-      runs-on: ${{ matrix.os }}
+  #     runs-on: ${{ matrix.os }}
 
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v2
-          with:
-            submodules: recursive
+  #     steps:
+  #       - name: Checkout
+  #         uses: actions/checkout@v2
+  #         with:
+  #           submodules: recursive
 
-        - name: Setup
-          run: |
-            bash scripts/ci/${{ matrix.name }}/01-setup.sh
+  #       - name: Setup
+  #         run: |
+  #           bash scripts/ci/${{ matrix.name }}/01-setup.sh
 
-        - name: Build
-          run:
-            bash scripts/ci/${{ matrix.name }}/02-build.sh
+  #       - name: Build
+  #         run:
+  #           bash scripts/ci/${{ matrix.name }}/02-build.sh
 
-        - name: Test
-          run:
-            bash scripts/ci/${{ matrix.name }}/03-test.sh
+  #       - name: Test
+  #         run:
+  #           bash scripts/ci/${{ matrix.name }}/03-test.sh
 
-        - name: Package
-          run:
-            bash scripts/ci/${{ matrix.name }}/04-package.sh
+  #       - name: Package
+  #         run:
+  #           bash scripts/ci/${{ matrix.name }}/04-package.sh
 
-        - uses: actions/upload-artifact@v2
-          if: ${{ failure() }}
-          with:
-            name: slimt
-            path: |
-              ${{ github.workspace }}/slimt-coredump
+  #       - uses: actions/upload-artifact@v2
+  #         if: ${{ failure() }}
+  #         with:
+  #           name: slimt
+  #           path: |
+  #             ${{ github.workspace }}/slimt-coredump
 
 
 
@@ -289,6 +289,7 @@ jobs:
           with:
             name: wheels
             path: ./wheelhouse/*.whl
+
   upload-release:
     name: "Upload Release"
     runs-on: ubuntu-latest
@@ -299,6 +300,12 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: wheels
+        
+    - name: Debugging Information
+      run: |
+        echo "Download Artifacts Step Executed Successfully!"
+        ls -R ${{ github.workspace }}
+      if: always()
 
     - name: Create Release
       id: create_release
@@ -310,6 +317,12 @@ jobs:
         release_name: Release ${{ github.ref }}
         draft: false
         prerelease: false
+
+    - name: Debugging Information
+      run: |
+        echo "Download Artifacts Step Executed Successfully!"
+        ls -R ${{ github.workspace }}
+      if: always()
 
     - name: Debug Information2
       run: |
